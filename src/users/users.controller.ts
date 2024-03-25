@@ -1,23 +1,18 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Authorized, Req, Res, UseBefore } from 'routing-controllers';
-import { AuthRequest } from 'src/interfaces/Responce.interface';
+import { AuthRequest } from 'src/interfaces/responce.interface';
 import { NextFunction } from 'express';
 import { UserDto } from './dto/user.dto';
 import * as bcrypt from 'bcrypt';
 import { AdminAuthGuard } from 'src/auth/guard/admin-auth.guard';
-import { UserAuthGuard } from 'src/auth/guard/user-auth.guard';
-// import dataSource from 'db/data-source';
-import { User } from './entities/user.entity';
-import dataSource from 'src/db/data-source';
-import { getConnection } from 'typeorm';
 
 @Controller()
   export class UsersController { 
     constructor(protected userService: UsersService) {
   }
 
-  @UseGuards(UserAuthGuard)
+  @UseGuards(AdminAuthGuard)
   @Get('/users')
   async getUser(@Req() req: AuthRequest, @Res() res: Response, next: NextFunction): Promise<any> {
     try {
@@ -58,7 +53,7 @@ import { getConnection } from 'typeorm';
     }
   }
 
-  // @UseGuards(AdminAuthGuard)  
+  // @UseGuards(AdminAuthGuard)
   @Post('/create-user')
   async createUser(@Req() req: AuthRequest, @Res() res: Response, next: NextFunction, @Body() body: UserDto) {
     try {
