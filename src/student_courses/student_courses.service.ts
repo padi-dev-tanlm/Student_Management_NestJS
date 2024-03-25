@@ -50,4 +50,6 @@ export class Student_CoursesService{
   async count(object: Object): Promise<any> {
     return this.student_courseRepository.count(object)
   }
+
+  
 }
