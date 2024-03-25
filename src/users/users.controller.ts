@@ -53,19 +53,12 @@ import { AdminAuthGuard } from 'src/auth/guard/admin-auth.guard';
     }
   }
 
-  // @UseGuards(AdminAuthGuard)
   @Post('/create-user')
   async createUser(@Req() req: AuthRequest, @Res() res: Response, next: NextFunction, @Body() body: UserDto) {
     try {
       const data = body;
       const hashPassword = bcrypt.hashSync(data.password, 10);
-      const userExistedByEmail = await this.userService.findByCondition({
-        where: {email: data.email}
-      });
-      const userExistedById = await this.userService.findByCondition({
-        where: {userId: data.userId}
-      })
-      if(userExistedByEmail || userExistedById) {
+      if(this.userService.checkUserExisted(data.email, data.userId)) {
         return {
           message: 'Existed userId or email',
         }
@@ -122,10 +115,7 @@ import { AdminAuthGuard } from 'src/auth/guard/admin-auth.guard';
   @Post('/edit-user/:id')
   async editUserById(@Param('id') id: number, @Body() body: any) {
     try {
-      const findUserById = await this.userService.findByCondition({
-        where: {id: id}
-      });
-      if(!findUserById) {
+      if(!this.userService.findOneById(id)) {
         return {
           message: 'User not found',
         }

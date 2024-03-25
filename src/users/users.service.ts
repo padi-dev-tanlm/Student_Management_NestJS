@@ -61,4 +61,11 @@ export class UsersService {
   async createUser(data: UserDto): Promise<User> {
     return this.create(data)
   }
+
+  async checkUserExisted(email: string, userId: string): Promise<boolean> {
+    if(this.findByEmail(email) || this.userRepository.findOne({where: {userId: userId}})) {
+      return true
+    }
+    return false
+  }
 }
