@@ -29,27 +29,19 @@ import { AdminAuthGuard } from 'src/auth/guard/admin-auth.guard';
         }
       }
 
-      const student = await this.userService.findByCondition({
-        where: {id: data.studentId}
-      });
-      if(!student || student.roleId != 2) {
+      if(!this.userService.checkStudent(data.studentId)) {
         return {
           message: 'Student ID is not existed'
         }
       }
-      const numberStudentInCourse = await this.student_courseService.count({
-        where: {courseId: data.courseId}
-      })
-      if(numberStudentInCourse >= course.quantity) {
+
+      if(this.courseService.checkCourseFull(data.courseId)) {
         return {
           message: 'The course is full'
         }
       }
       
-      const existed = await this.student_courseService.findByCondition({
-        where: {studentId: data.studentId, courseId: data.courseId}
-      });
-      if(existed) {
+      if(this.student_courseService.checkExisted(data.studentId, data.courseId)) {
         return {
           message: 'Existed'
         }

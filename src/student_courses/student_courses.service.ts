@@ -3,12 +3,13 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Student_Course } from "./entities/student_course.entity";
 import { Student_CourseDto } from "./dto/student_courses.dto";
+import { User } from "src/users/entities/user.entity";
 
 @Injectable()
 export class Student_CoursesService{
   constructor(
     @InjectRepository(Student_Course)
-    private readonly student_courseRepository: Repository<Student_Course>,
+    private readonly student_courseRepository: Repository<Student_Course>
   ) {}
   // Add CRUD operations you intend to use here
   async findAll(): Promise<Student_Course[]> {
@@ -49,5 +50,12 @@ export class Student_CoursesService{
 
   async count(object: Object): Promise<any> {
     return this.student_courseRepository.count(object)
+  }
+
+  async checkExisted(studentId: number, courseId: number): Promise<boolean> {
+    if(this.findByCondition({ where: {studentId: studentId, courseId: courseId} })) {
+      return true;
+    }
+    return false;
   }
 }
