@@ -15,7 +15,6 @@ export class CoursesController {
   async getCourses() {
     try {
       const courses = this.courseService.findAll();
-      console.log(this.userService);
       return {
         message: 'Success',
         data: courses
@@ -55,10 +54,7 @@ export class CoursesController {
   async createCourse(@Body() body: CourseDto) {
     try {
       const courseId = body.courseId;
-      const existed = await this.courseService.findByCondition({
-        where: {courseId: courseId}
-      })
-      if(existed) {
+      if(this.courseService.checkCourseId(courseId)) {
         return {
           message: 'Course is existed'
         }
@@ -80,8 +76,7 @@ export class CoursesController {
   @Delete('/delete-course/:id')
   async deleteCourse(@Param('id') id: number) {
     try {
-      const course = await this.courseService.findOneById(id);
-      if(!course) {
+      if(!this.courseService.checkCourseId(id)) {
         return {
           message: 'Course not found'
         }

@@ -68,4 +68,12 @@ export class UsersService {
     }
     return false
   }
+
+  async checkStudent(id: number): Promise<boolean> {
+    const user = await this.findOneById(id);
+    if(!user || user.roleId != 2) {
+      return false;
+    }
+    return true;
+  }
 }
